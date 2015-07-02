@@ -87,7 +87,7 @@ struct opj_res opj_init(const char *fname, opj_dparameters_t *parameters) {
 	}
 
 	resources.open_file = fptr;
-	resources.l_stream = opj_stream_create_default_file_stream(fptr,1);
+	resources.l_stream = opj_stream_create_default_file_stream(fname,1);
 	if(!resources.l_stream) { 
 		resources.status = 1; 
 		return resources;
