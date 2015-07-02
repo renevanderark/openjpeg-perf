@@ -1,6 +1,7 @@
 <?php
 	if(isset($_POST['newbuild'])) {
 		`./pull-and-build.sh > build.log 2>&1 &`;
+		header("HTTP/1.1 200 OK");
 		exit();
 	} elseif(isset($_POST['spec'])) {
 		var_dump($_POST['spec']);
@@ -85,7 +86,7 @@
 					<?php endforeach; ?>
 				</select>
 			<?php endif; ?>
-			<button type="button" onclick="newBuild(this)">Pull new build</button>
+			<button type="button" autocomplete="off" onclick="newBuild(this)">Pull new build</button>
 			</div>
 			<div>
 			<?php if(count($builds) > 0 && count($samples) > 0): ?>
