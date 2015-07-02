@@ -1,11 +1,9 @@
 #!/bin/sh
 
-if [ ! -d "openjpeg" ]; then
-	git clone 'https://github.com/uclouvain/openjpeg.git'
-fi
+rm -rf openjpeg
+git clone 'https://github.com/uclouvain/openjpeg.git'
 
 cd openjpeg
-git pull origin master
 build=`date +"%Y%m%d-"``git log -1 | head -1 | sed -e "s/commit //g"`
 cd ..
 export DESTDIR=`pwd`/builds/$build
@@ -14,3 +12,5 @@ mkdir -p ../builds/$build
 cmake .
 make
 make install
+rm -rf ../builds/latest
+cp -R ../builds/$build ../builds/latest
