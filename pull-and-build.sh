@@ -14,3 +14,7 @@ make
 make install
 rm -rf ../builds/latest
 cp -R ../builds/$build ../builds/latest
+
+cd ..
+./compile-opj-md.sh
+echo 'BUILD DONE'
