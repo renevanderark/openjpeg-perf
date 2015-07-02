@@ -7,7 +7,7 @@
 		exit();
 	} elseif (isset($_GET['tail'])) {
 		$file =  $_GET['tail'];
-		$tail = `tail -10000 $file`;
+		$tail = `tail -10000 $file 2> /dev/null`;
 		echo $tail;
 		exit();
 	}
@@ -34,7 +34,7 @@
 		<script type="text/javascript" src="https://code.jquery.com/jquery-1.11.3.min.js"></script>
 		<script type="text/javascript">
 			var building = false;
-			function showBuildLog() {
+			function showBuildLog(callback) {
 				$.ajax("/?tail=build.log", {
 					success: function(data) {
 						var before = $("#build-tail").html();
@@ -42,26 +42,30 @@
 						if(building) {
 							setTimeout(showBuildLog, 50);
 						}
+						if(callback) {
+							callback();
+						}
 					}
 				});
 			}
 
-			function newBuild() {
+			function newBuild(button) {
 				var fd = new FormData();    
 				fd.append( 'newbuild', 1);
 				building = true;
 				$("#build-tail").html("");
-				showBuildLog();
-				$(this).attr("disabled", true);
-				$.ajax({
-				  url: '/',
-				  data: fd,
-				  processData: false,
-				  contentType: false,
-				  type: 'POST',
-				  success: function(data){
-				  		location.reload();
-				  }
+				$(button).prop("disabled", true);
+				showBuildLog(function() { 
+					$.ajax({
+					  url: '/',
+					  data: fd,
+					  processData: false,
+					  contentType: false,
+					  type: 'POST',
+					  success: function(data){
+					  		location.reload();
+					  }
+					});
 				});
 			}
 
@@ -81,7 +85,7 @@
 					<?php endforeach; ?>
 				</select>
 			<?php endif; ?>
-			<button type="button" onclick="newBuild()">Pull new build</button>
+			<button type="button" onclick="newBuild(this)">Pull new build</button>
 			</div>
 			<div>
 			<?php if(count($builds) > 0 && count($samples) > 0): ?>
