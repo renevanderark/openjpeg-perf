@@ -1,4 +1,6 @@
 <?php
+	require_once('list-dir.php');
+
 	if(isset($_POST['newbuild'])) {
 		`./pull-and-build.sh > build.log 2>&1 &`;
 		header("HTTP/1.1 200 OK");
@@ -16,18 +18,7 @@
 		exit();
 	}
 
-	function listDir($path) {
-		$list = [];
-		$dh = opendir($path);
-		if($dh) {
-			while($file = readdir($dh)) {
-				if($file === "." || $file === "..") { continue; }
-				$list[] = $file;
-			}
-			closedir($dh);
-		}
-		return $list;
-	}
+
 
 	$builds = listDir("builds");
 	$samples = listDir("samples");
