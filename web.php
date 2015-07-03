@@ -4,7 +4,10 @@
 		header("HTTP/1.1 200 OK");
 		exit();
 	} elseif(isset($_POST['spec'])) {
-		var_dump($_POST['spec']);
+		if(key($_POST['spec']) === 'upload') {
+			move_uploaded_file($_FILES["upload"]["tmp_name"], "./samples/" . $_FILES["upload"]["name"]);
+			header("Location: /");
+		}
 		exit();
 	} elseif (isset($_GET['tail'])) {
 		$file =  $_GET['tail'];
@@ -77,29 +80,36 @@
 	</head>
 	<body>	
 		<form id="controller-form" action="/" method="POST">
-			<div>
 			<?php if(count($builds) > 0): ?>
 				<select name="spec[build]">
 					<option value="" disabled selected>- Select build -</option>
 					<?php foreach($builds as $build): ?>
-						<option value="<?php echo $build ?>"><?php echo $build; ?></option>					
+						<?php $buildTS = preg_replace("/-.*$/", "", $build); ?>
+
+						<option value="<?php echo $build ?>">
+							<?php if($build !== "latest"): ?>(<?php echo date("d-m-Y", $buildTS); ?>) -<?php endif; ?>
+							<?php echo $build; ?>
+						</option>
 					<?php endforeach; ?>
 				</select>
 			<?php endif; ?>
 			<button type="button" autocomplete="off" onclick="newBuild(this)">Pull new build</button>
-			</div>
-			<div>
-			<?php if(count($builds) > 0 && count($samples) > 0): ?>
-				<select name="spec[sample]">
-					<option value="" disabled selected>- Select sample -</option>
-					<?php foreach($samples as $sample): ?>
-						<option value="<?php echo $sample ?>"><?php echo $sample; ?></option>					
-					<?php endforeach; ?>
-				</select>
-			<?php endif; ?>
-			</div>
 			<input type="submit" value="TODO: Run tests" />
 		</form>
+
+		<h4>Samples</h4>
+		<form action="/" method="POST" enctype="multipart/form-data">
+    		<input type="file" name="upload">
+    		<input type="submit" value="Upload Sample" name="spec[upload]">
+		</form>
+		<?php if(count($builds) > 0 && count($samples) > 0): ?>
+			<?php foreach($samples as $sample): ?>
+				<div>
+					<?php echo $sample; ?>
+				</div>
+			<?php endforeach; ?>
+		<?php endif; ?>
+
 		<h2>Build log</h2>
 		<pre style="max-height: 500px; overflow: auto" id="build-tail">
 		</pre>

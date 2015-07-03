@@ -37,15 +37,16 @@ struct opj_res opj_init_res(void) {
 	resources.l_stream = NULL;
 	resources.l_codec = NULL;
 	resources.image = NULL;
-	resources.open_file = NULL;
 
 	return resources;
 }
 
-int opj_init_from_stream(opj_dparameters_t *parameters, struct opj_res *resources) {
+int opj_init_from_stream(opj_dparameters_t *parameters, struct opj_res *resources, OPJ_CODEC_FORMAT fmt) {
 
 	resources->image = NULL;
-	resources->l_codec = opj_create_decompress(OPJ_CODEC_JP2);
+
+
+	resources->l_codec = opj_create_decompress(fmt);
 
 	if(!opj_setup_decoder(resources->l_codec, parameters)) {
 		opj_stream_destroy(resources->l_stream);
@@ -80,19 +81,19 @@ int opj_init_from_stream(opj_dparameters_t *parameters, struct opj_res *resource
 struct opj_res opj_init(const char *fname, opj_dparameters_t *parameters) {
 
 	struct opj_res resources = opj_init_res();
-	FILE *fptr = fopen(fname, "rb");
-	if(fptr == NULL) {
-		resources.status = 1;
-		return resources;
-	}
 
-	resources.open_file = fptr;
 	resources.l_stream = opj_stream_create_default_file_stream(fname,1);
 	if(!resources.l_stream) { 
 		resources.status = 1; 
 		return resources;
 	}
-	resources.status = opj_init_from_stream(parameters, &resources);
+	if(strstr(fname, ".jp2") != NULL) {
+		resources.status = opj_init_from_stream(parameters, &resources, OPJ_CODEC_JP2);
+	} else if(strstr(fname, ".j2k") != NULL) {
+		resources.status = opj_init_from_stream(parameters, &resources, OPJ_CODEC_J2K);
+	} else {
+		resources.status = 1;
+	}
 	return resources;
 }
 
@@ -100,6 +101,5 @@ void opj_cleanup(struct opj_res *resources) {
 	if(resources->l_stream) { opj_stream_destroy(resources->l_stream); resources->l_stream = NULL; }
 	if(resources->l_codec) { opj_destroy_codec(resources->l_codec);resources->l_codec = NULL; }
 	if(resources->image) { opj_image_destroy(resources->image); resources->image = NULL; }
-	if(resources->open_file) { fclose(resources->open_file); resources->open_file = NULL; }
 }
 

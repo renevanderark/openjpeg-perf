@@ -24,10 +24,9 @@ typedef struct opj_res {
 	opj_stream_t *l_stream;
 	opj_codec_t *l_codec;
 	opj_image_t *image;
-	FILE *open_file;
 } opj_res_t;
 
 void opj_cleanup(struct opj_res *resources);
 struct opj_res opj_init_res(void);
 struct opj_res opj_init(const char *fname, opj_dparameters_t *parameters);
-int opj_init_from_stream(opj_dparameters_t *parameters, struct opj_res *resources);
+int opj_init_from_stream(opj_dparameters_t *parameters, struct opj_res *resources, OPJ_CODEC_FORMAT fmt);
