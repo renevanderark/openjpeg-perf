@@ -18,13 +18,17 @@
 		$nTiles = $fileMd["tw"] * $fileMd["th"];
 		for($res = 0; $res < $fileMd["num_res"]; $res++) {
 			echo "echo \"Decoding tiles in parallel for $sample with opj_decompress at reduction $res\"\n";
+			echo "ts=\$(date +%s%N)\n";
 			for($i = 0; $i < $nTiles; $i++) {
 				echo "./time_opj_decode_cmd.sh $build $sample $res $i >> $resultFile &\n";
 			}
 			echo "wait\n";
+			echo "tt=\$(((\$(date +%s%N) - \$ts)/1000000))\n";
+			echo "echo \"opj;$build;$sample;$res;full-async;\$tt\" >> $resultFile\n";
 
 			echo "echo \"Decoding tiles in parallel for $sample with kdu_expand at reduction $res\"\n";
-			for($tx = 0; $tx < $fileMd["tw"]; $tx++)
+			echo "ts=\$(date +%s%N)\n";
+			for($tx = 0; $tx < $fileMd["tw"]; $tx++) {
 				for($ty = 0; $ty < $fileMd["th"]; $ty++) {
 					$leftPerc = bcdiv(($tx * $fileMd["tdx"]), $fileMd["x1"], 30);
 					$wPerc = bcdiv(($fileMd["tdx"]), $fileMd["x1"], 30);
@@ -33,8 +37,9 @@
 					$kduRegion = "\"{" . $topPerc . "," . $leftPerc . "},{" . $hPerc . "," . $wPerc . "}\"";
 					echo "./time_kdu_decode_cmd.sh $sample $res $kduRegion >> $resultFile &\n";
 				}
+			}
 			echo "wait\n";
+			echo "tt=\$(((\$(date +%s%N) - \$ts)/1000000))\n";
+			echo "echo \"kdu; ;$sample;$res;full-async;\$tt\" >> $resultFile\n";
 		}
-
-
 	}
