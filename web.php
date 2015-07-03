@@ -5,6 +5,11 @@
 		`./pull-and-build.sh > build.log 2>&1 &`;
 		header("HTTP/1.1 200 OK");
 		exit();
+	} elseif(isset($_POST['runtests']) && isset($_POST['build']) ) {
+		$build = $_POST['build'];
+		`./execute_tests.sh $build > build.log 2>&1 &`;
+		header("HTTP/1.1 200 OK");
+		exit();
 	} elseif(isset($_POST['spec'])) {
 		if(key($_POST['spec']) === 'upload') {
 			move_uploaded_file($_FILES["upload"]["tmp_name"], "./samples/" . $_FILES["upload"]["name"]);
@@ -64,6 +69,32 @@
 				});
 			}
 
+			function runTests(button) {
+				var fd = new FormData();
+				var build = $("select[name='build']").val();
+				if(!build || build === "") {
+					build = "latest";
+					$("select[name='build']").val(build);
+				}
+				fd.append('runtests', 1);
+				fd.append('build', build);
+				building = true;
+				$("#build-tail").html("");
+				$(button).prop("disabled", true);
+				showBuildLog(function() { 
+					$.ajax({
+					  url: '/',
+					  data: fd,
+					  processData: false,
+					  contentType: false,
+					  type: 'POST',
+					  success: function(data){
+					  		location.reload();
+					  }
+					});
+				});
+			}
+
 			$(document).on("ready", function() {
 				showBuildLog();
 			})
@@ -72,7 +103,7 @@
 	<body>	
 		<form id="controller-form" action="/" method="POST">
 			<?php if(count($builds) > 0): ?>
-				<select name="spec[build]">
+				<select name="build">
 					<option value="" disabled selected>- Select build -</option>
 					<?php foreach($builds as $build): ?>
 						<?php $buildTS = preg_replace("/-.*$/", "", $build); ?>
@@ -85,7 +116,7 @@
 				</select>
 			<?php endif; ?>
 			<button type="button" autocomplete="off" onclick="newBuild(this)">Pull new build</button>
-			<input type="submit" value="TODO: Run tests" />
+			<button type="button" autocomplete="off" onclick="runTests(this)">Run tests</button>
 		</form>
 
 		<h4>Samples</h4>
