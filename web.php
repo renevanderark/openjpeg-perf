@@ -25,8 +25,9 @@
 
 
 
-	$builds = listDir("builds");
-	$samples = listDir("samples");
+	@$builds = listDir("builds");
+	@$samples = listDir("samples");
+	@$reports = listDir("out/test/html");
 ?>
 
 <html>
@@ -122,6 +123,7 @@
 				</div>
 			<?php endforeach; ?>
 		<?php endif; ?>
+		<?php // var_dump($reports); ?>
 
 		<h2>Build log</h2>
 		<pre style="max-height: 500px; overflow: auto" id="build-tail">

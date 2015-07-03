@@ -21,5 +21,33 @@
 			$resMap[$sample][$res][$decoder]["tiles"][intval($tile)] = $time;
 		}
 	}
+?>
 
-	var_dump($resMap);
+<table>
+<thead>
+	<tr>
+		<th>Sample file</th>
+		<th>Resolution reduction level</th>
+		<th>Decoder</th>
+		<th>Full image (ms)</th>
+		<th>Avg/tile parallel (ms)</th>
+		<th>Full image parallel tiles (ms)</th>
+	</tr>
+</thead>
+<tbody>
+	<?php foreach($resMap as $sample => $sampleMap): ?>
+		<?php foreach($sampleMap as $res => $resolutionMap): ?>
+			<?php foreach($resolutionMap as $decoder => $decoderMap): ?>
+				<tr>
+					<td><?php echo $sample; ?></td>
+					<td><?php echo $res; ?></td>
+					<td><?php echo $decoder; ?></td>
+					<td><?php echo $decoderMap["full-seq"]; ?></td>
+					<td><?php echo bcdiv(array_sum($decoderMap["tiles"]), count($decoderMap["tiles"]), 1); ?></td>
+					<td><?php echo $decoderMap["full-async"]; ?></td>
+				</tr>
+			<?php endforeach; ?>
+		<?php endforeach; ?>
+	<?php endforeach; ?>
+</tbody>
+</table>
