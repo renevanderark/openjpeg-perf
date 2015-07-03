@@ -49,12 +49,9 @@
 				});
 			}
 
-			function newBuild(button) {
-				var fd = new FormData();    
-				fd.append( 'newbuild', 1);
+			function _execBuild(fd) {
 				building = true;
 				$("#build-tail").html("");
-				$(button).prop("disabled", true);
 				showBuildLog(function() { 
 					$.ajax({
 					  url: '/',
@@ -69,6 +66,13 @@
 				});
 			}
 
+			function newBuild(button) {
+				var fd = new FormData();    
+				fd.append( 'newbuild', 1);
+				$(button).prop("disabled", true);
+				_execBuild(fd);
+			}
+
 			function runTests(button) {
 				var fd = new FormData();
 				var build = $("select[name='build']").val();
@@ -78,21 +82,8 @@
 				}
 				fd.append('runtests', 1);
 				fd.append('build', build);
-				building = true;
-				$("#build-tail").html("");
 				$(button).prop("disabled", true);
-				showBuildLog(function() { 
-					$.ajax({
-					  url: '/',
-					  data: fd,
-					  processData: false,
-					  contentType: false,
-					  type: 'POST',
-					  success: function(data){
-					  		location.reload();
-					  }
-					});
-				});
+				_execBuild(fd);
 			}
 
 			$(document).on("ready", function() {
