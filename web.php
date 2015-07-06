@@ -10,6 +10,12 @@
 		`./execute_tests.sh $build > build.log 2>&1 &`;
 		header("HTTP/1.1 200 OK");
 		exit();
+	} elseif(isset($_POST['deletesample'])) {
+		unlink("samples/" . $_POST['deletesample']);
+		header("Location: /");
+	} elseif(isset($_POST['deletereport'])) {
+		unlink("out/test/html/" . $_POST['deletereport']);
+		header("Location: /");
 	} elseif(isset($_POST['spec'])) {
 		if(key($_POST['spec']) === 'upload') {
 			move_uploaded_file($_FILES["upload"]["tmp_name"], "./samples/" . $_FILES["upload"]["name"]);
@@ -38,7 +44,7 @@
 <html>
 	<head>
 		<style type="text/css">
-			body, html, table {
+			body, html, table, form {
 				font-size: 12px;
 				font-family: sans-serif;
 				padding: 0;
@@ -63,6 +69,9 @@
 		 		color: blue;
 		 	}
 
+		 	select {
+		 		max-width: 250px;
+		 	}
 		 	#result-container td {
 		 		text-align: right;
 		 	}
@@ -72,9 +81,8 @@
 			}
 
 			td {
+			    border: 1px solid #ddd;
 			    border-top: 1px solid #aaa;
-			    border-bottom: 1px solid #ddd;
-			    border-right: 1px solid #ddd;
 			    padding-right: 4px;
 			}
 			#result-container td:nth-child(1) {
@@ -123,14 +131,22 @@
 			<h2>Samples</h2>
 			<form action="/" method="POST" enctype="multipart/form-data">
 	    		<input type="file" name="upload">
-	    		<input type="submit" value="Upload Sample" name="spec[upload]">
-			</form>
+	    		<input type="submit" value="Upload Sample" autocomplete="off" name="spec[upload]">
+			</form><br />
 			<?php if(count($samples) > 0): ?>
+				<table>
 				<?php foreach($samples as $sample): ?>
-					<div>
-						<?php echo $sample; ?>
-					</div>
+					<tr>
+						<td><?php echo $sample; ?></td>
+						<td>
+							<form action="/" method="POST">
+								<input type="hidden" name="deletesample" value="<?php echo $sample; ?>" />
+								<button autocomplete="off" type="submit">Delete</button>
+							</form>
+						</td>
+					</tr>
 				<?php endforeach; ?>
+				</table>
 			<?php endif; ?>
 			<h2>Test report overview</h2>
 			<?php if(count($reports) === 0): ?>
@@ -164,6 +180,12 @@
 									onclick="showReport(this)">		
 										<?php echo $buildId; ?>
 								</a>
+							</td>
+							<td>
+								<form action="/" method="POST">
+									<input type="hidden" name="deletereport" value="<?php echo $report; ?>" />
+									<button autocomplete="off" type="submit">Delete</button>
+								</form>
 							</td>
 						</tr>
 					<?php endforeach; ?>

@@ -18,7 +18,7 @@
 		} elseif(trim($tile) === "full-async") {
 			$resMap[$sample][$res][$decoder]["full-async"] = $time;
 		} else {
-			$resMap[$sample][$res][$decoder]["tiles"][intval($tile)] = $time;
+			$resMap[$sample][$res][$decoder]["tiles"][$tile] = $time;
 		}
 	}
 ?>
@@ -32,6 +32,7 @@
 		<th>Full seq (ms)</th>
 		<th>Avg/tile (ms)</th>
 		<th>Full parallel (ms)</th>
+		<th>N tiles</th>
 	</tr>
 </thead>
 <tbody>
@@ -45,6 +46,7 @@
 					<td><?php echo $decoderMap["full-seq"]; ?></td>
 					<td><?php echo bcdiv(array_sum($decoderMap["tiles"]), count($decoderMap["tiles"]), 1); ?></td>
 					<td><?php echo $decoderMap["full-async"]; ?></td>
+					<td><?php echo count($decoderMap["tiles"]); ?></td>
 				</tr>
 			<?php endforeach; ?>
 		<?php endforeach; ?>
