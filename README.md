@@ -1,5 +1,7 @@
 # openjpeg-perf
 
+![Screenshot](https://raw.githubusercontent.com/renevanderark/openjpeg-perf/master/screenshot.png)
+
 todo general outline:
 ---
 
