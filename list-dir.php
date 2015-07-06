@@ -9,5 +9,6 @@
 			}
 			closedir($dh);
 		}
-		return $list;
+		sort($list);
+		return array_reverse($list);
 	}

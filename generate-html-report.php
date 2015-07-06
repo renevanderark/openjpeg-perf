@@ -26,12 +26,12 @@
 <table>
 <thead>
 	<tr>
-		<th>Sample file</th>
-		<th>Resolution reduction level</th>
+		<th>Sample</th>
+		<th>Res</th>
 		<th>Decoder</th>
-		<th>Full image (ms)</th>
-		<th>Avg/tile parallel (ms)</th>
-		<th>Full image parallel tiles (ms)</th>
+		<th>Full seq (ms)</th>
+		<th>Avg/tile (ms)</th>
+		<th>Full parallel (ms)</th>
 	</tr>
 </thead>
 <tbody>
