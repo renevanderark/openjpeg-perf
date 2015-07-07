@@ -1,6 +1,6 @@
 # openjpeg-perf
 
-Measures processing speed of the openjpeg decoder on sample files. Currently supports .jp2 and .j2l formats.
+Measures processing speed of the openjpeg decoder on sample files. Currently supports .jp2 and .j2k formats.
 
 Compares processing times of the opj\_decompress binary with the kdu\_expand binary using shell scripts. 
 
