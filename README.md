@@ -6,6 +6,9 @@ Compares processing times of the opj\_decompress binary with the kdu\_expand bin
 
 Built on ubuntu 14.04 LTS.
 
+![Screenshot](https://raw.githubusercontent.com/renevanderark/openjpeg-perf/master/screenshot.png)
+
+
 
 Quick start
 ---
@@ -163,4 +166,3 @@ The raw log file can then be processed into an HTML report by running this comma
 
 	$ php generate-html-report.php < raw-log-file.log
 
-![Screenshot](https://raw.githubusercontent.com/renevanderark/openjpeg-perf/master/screenshot.png)
