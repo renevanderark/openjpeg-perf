@@ -43,7 +43,7 @@ Running the webapp
 Given the aforementioned package dependencies are met, the webapp should run out-of-the box with the following command, executed from the root of the project
 
 
-	$ php -S localhost:5000 web.php
+	$ php -S -d upload_max_filesize=150M -d post_max_size=150M localhost:5000 web.php
 
 
 You should now be able to navigate to http://localhost:5000 using a web browser and perform the following tasks from there:
